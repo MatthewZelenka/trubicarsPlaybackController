@@ -16,10 +16,9 @@ let seekerBarObserver = new MutationObserver((mutations) => {
 })
 
 let pageObserver = new MutationObserver((mutations) => {
-    var seekerBar = findSeekerBar()
-    if (seekerBar != null) {
+    if (findSeekerBar() != null) {
         console.log("Seeker bar found")
-        seekerBarObserver.observe(seekerBar, {
+        seekerBarObserver.observe(findSeekerBar(), {
             childList: false, 
             subtree: false, 
             attributes: true, 
@@ -37,15 +36,17 @@ pageObserver.observe(document.body, {
     characterData: false
 })
 
-window.addEventListener('load', function () {
-    console.log("Page loaded")
-    if (updateSeekerBar()) {
-        var seekerBar = findSeekerBar()
-        seekerBarObserver.observe(seekerBar, {
-            childList: false, 
-            subtree: false, 
-            attributes: true, 
-            characterData: false
-        })
+var checkExist = setInterval(function() {
+    if (findSeekerBar() != null) {
+        console.log("Seeker bar exists");
+        if (updateSeekerBar()) {
+            seekerBarObserver.observe(findSeekerBar(), {
+                childList: false, 
+                subtree: false, 
+                attributes: true, 
+                characterData: false
+            })
+        }
+        clearInterval(checkExist);
     }
-})
+ }, 100); // check every 100ms
